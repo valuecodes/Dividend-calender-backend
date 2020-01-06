@@ -7,7 +7,7 @@ app.use(express.json());
 
 app.get('/tickerList', function(req,res){
     req.getConnection(function(error, con) {
-        con.query("SELECT * FROM tickers limit 200",function(err, result, fields) {
+        con.query("SELECT * FROM tickers",function(err, result, fields) {
             if(err) throw error;
             // console.log(result);
             res.json(result);
@@ -40,13 +40,14 @@ app.get('/portfolioList',(req,res)=>{
 })
 
 app.post('/createPortfolio',(req,res)=>{
+    console.log(req.body);
     let tickerData=req.body.tickers;
     let tickers='';
     for(var i=0;i<tickerData.length;i++){
         tickers+=tickerData[i][0]+','+tickerData[i][1]+','
     }
     req.getConnection(function(error, con) {
-        var sql = "INSERT INTO portfolios (name,stocks) VALUES('"+req.body.name+"','"+tickers+"')";
+        var sql = "INSERT INTO portfolios (name,stocks,isActive) VALUES('"+req.body.name+"','"+tickers+"','"+req.body.isActive+"')";
         con.query(sql, function (err, result) {  
             if (err) throw err;
             console.log(req.body.name+" inserted");     
